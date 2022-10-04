@@ -1,0 +1,42 @@
+[
+   {
+      "id": "02ac57ff-0a71-4bb5-a2d2-1e51dea7a7b1",
+      "creatorId": 1,
+      "name": "Club 111",
+      "interests": [
+         "football,Chess",
+         "Maths"
+      ],
+      "participants": [
+         1,
+         2
+      ],
+      "banned": []
+   },
+   {
+      "id": "02ac57ff-0a71-4bb5-a2d2-1e51dea7a7b2",
+      "creatorId": 1,
+      "name": "Club 222",
+      "interests": [
+         "basketball,fitness"
+      ],
+      "participants": [
+         1
+      ],
+      "banned": []
+   },
+   {
+      "id": "02ac57ff-0a71-4bb5-a2d2-1e51dea7a7b3",
+      "creatorId": 2,
+      "name": "Club 333",
+      "interests": [
+         "books,reading"
+      ],
+      "participants": [
+         2
+      ],
+      "banned": [
+         1
+      ]
+   }
+]
