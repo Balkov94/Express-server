@@ -4,6 +4,9 @@ import * as logger from 'morgan';
 import { sendErrorResponse } from './utils';
 import commentsRouter from './routes/comments-Router';
 import clubsRouter from './routes/clubs-Router';
+import usersRouter from './routes/users-Router';
+import questionsRouter from './routes/questions-Router';
+import booksRouter from './routes/books-Router';
 
 const HOSTNAME = 'localhost';
 const PORT = 4000;
@@ -20,7 +23,10 @@ app.use(express.json({ limit: '10mb' }))
 
 app
    .use('/api/comments', commentsRouter)
-   .use('/api/clubs', clubsRouter);
+   .use('/api/clubs', clubsRouter)
+   .use('/api/users', usersRouter)
+   .use('/api/questions', questionsRouter)
+   .use('/api/books', booksRouter)
 
 
 //  

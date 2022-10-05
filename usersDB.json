@@ -1,0 +1,47 @@
+[
+   {
+      "fname": "111",
+      "lname": "111",
+      "username": "username33333",
+      "password": "11111111!",
+      "phone": "0889100100",
+      "mail": "somemail@gmail.com",
+      "userPic": "http://adonisjs.com",
+      "description": "This user-admin is created for more easily testing the system!",
+      "role": "2",
+      "status": "1",
+      "timeOfCreation": "Fri Aug 19 2022 9:33:22 PM ",
+      "timeOfModification": "",
+      "id": "1"
+   },
+   {
+      "fname": "222",
+      "lname": "222",
+      "username": "username33333",
+      "password": "11111111!",
+      "phone": "0889100100",
+      "mail": "somemail@gmail.com",
+      "userPic": "http://adonisjs.com",
+      "description": "This user-admin is created for more easily testing the system!",
+      "role": "2",
+      "status": "1",
+      "timeOfCreation": "Fri Aug 19 2022 9:33:22 PM ",
+      "timeOfModification": "",
+      "id": "2"
+   },
+   {
+      "fname": "333",
+      "lname": "333",
+      "username": "username33333",
+      "password": "11111111!",
+      "phone": "0889100100",
+      "mail": "somemail@gmail.com",
+      "userPic": "http://adonisjs.com",
+      "description": "This user-admin is created for more easily testing the system!",
+      "role": "2",
+      "status": "1",
+      "timeOfCreation": "Fri Aug 19 2022 9:33:22 PM ",
+      "timeOfModification": "",
+      "id": "3"
+   }
+]

@@ -1,1 +1,29 @@
-[{"creatorId":"1","discussionId":"1","isClub":true,"content":"test 111111","timeOfCreation":"4.10.2022","timeOfModification":null,"id":"02ac57ff-0a75-4bb5-a2d2-1e51dea7a7b1"},{"creatorId":"2","discussionId":"2","isClub":true,"content":"test 2222222","timeOfCreation":"4.10.2022","timeOfModification":null,"id":"02ac57ff-0a75-4bb5-a2d2-1e51dea7a7b2"},{"creatorId":"3","discussionId":"3","isClub":true,"content":"UPDATED Content","timeOfCreation":"4.10.2022","timeOfModification":null,"id":"02ac57ff-0a75-4bb5-a2d2-1e51dea7a7b3"}]
+[
+   {
+      "creatorId": "1",
+      "discussionId": "1",
+      "isClub": true,
+      "content": "test 111111",
+      "timeOfCreation": "4.10.2022",
+      "timeOfModification": null,
+      "id": "02ac57ff-0a75-4bb5-a2d2-1e51dea7a7b1"
+   },
+   {
+      "creatorId": "2",
+      "discussionId": "2",
+      "isClub": true,
+      "content": "test 2222222",
+      "timeOfCreation": "4.10.2022",
+      "timeOfModification": null,
+      "id": "02ac57ff-0a75-4bb5-a2d2-1e51dea7a7b2"
+   }, 
+   {
+      "creatorId": "3",
+      "discussionId": "3",
+      "isClub": true,
+      "content": "test 33333333",
+      "timeOfCreation": "4.10.2022",
+      "timeOfModification": null,
+      "id": "02ac57ff-0a75-4bb5-a2d2-1e51dea7a7b3"
+   }
+]
