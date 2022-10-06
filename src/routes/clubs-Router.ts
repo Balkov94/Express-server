@@ -7,7 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 const router = express.Router();
 const clubsDB = 'clubsDB.json';
 
-// Posts API Feature
+// Clubs - (ReadingClubs) API Feature
 router.get('/', async (req, res) => {
    try {
       const clubsData = await promises.readFile(clubsDB)
@@ -18,7 +18,7 @@ router.get('/', async (req, res) => {
    }
 });
 
-router.get('/:id', async (req, res) => {
+router.get('/club:id', async (req, res) => {
    const params = req.params;
    try {
       await indicative.validator.validate(params.id, { id: 'required|regex:^[0-9a-f]{24}$' });
@@ -26,7 +26,7 @@ router.get('/:id', async (req, res) => {
       //   const currComment = await req.app.locals.db.collection('posts').findOne({ _id: new ObjectID(req.params.id) });
       const clubsData = await promises.readFile(clubsDB)
       const clubs = JSON.parse(clubsData.toString());
-      const currClub =  clubs.find(c => c.id === params.id)
+      const currClub = clubs.find(c => c.id === params.id)
       if (!currClub) {
          sendErrorResponse(req, res, 404, `Club with ID=${req.params.id} does not exist`);
          return;
@@ -42,7 +42,7 @@ router.post('/', async function (req, res) {
    const newClub = req.body;
    try {
       await indicative.validator.validate(newClub, {
-         creatorId: 'required|string',
+         creatorId: 'required',
          name: 'required|string',
          interests: 'array|min:2|max:6',
          participants: 'array|min:1',
@@ -55,7 +55,7 @@ router.post('/', async function (req, res) {
       clubs.push(newClub);
       try {
          await promises.writeFile(clubsDB, JSON.stringify(clubs));
-         res.json(newClub);
+         res.status(201).json(newClub);
       } catch (err) {
          console.error(`Unable to create Club: ${newClub.id}: ${newClub.title}.`);
          console.error(err);
@@ -74,7 +74,7 @@ router.put('/:id', async (req, res) => {
    const clubsData = await promises.readFile(clubsDB)
    const clubs = JSON.parse(clubsData.toString());
    console.log(params)
-   const currClub =  clubs.find(c => c.id === params.id)
+   const currClub = clubs.find(c => c.id === params.id)
    if (!currClub) {
       sendErrorResponse(req, res, 404, `Club with ID=${req.params.id} does not exist`);
       return;
@@ -87,7 +87,7 @@ router.put('/:id', async (req, res) => {
    try {
       await indicative.validator.validate(newClubData, {
          // id:'required|regex:^[0-9a-f]{24}$',
-         creatorId: 'required|string',
+         creatorId: 'required',
          name: 'required|string',
          interests: 'array|min:2|max:6',
          participants: 'array|min:1',
@@ -95,7 +95,7 @@ router.put('/:id', async (req, res) => {
       });
       try {
          const updatedClub = { ...req.body, id: params.id }
-         const updatedClubsDB =  clubs.map(c => {
+         const updatedClubsDB = clubs.map(c => {
             if (c.id === updatedClub.id) {
                return updatedClub;
             }
@@ -120,13 +120,13 @@ router.delete('/:id', async (req, res) => {
       await indicative.validator.validate(params.id, { id: 'required|regex:^[0-9a-f]{24}$' });
       const clubsData = await promises.readFile(clubsDB);
       const clubs = JSON.parse(clubsData.toString());
-      const currClub =  clubs.find(c => c.id === params.id)
+      const currClub = clubs.find(c => c.id === params.id)
       if (!currClub) {
          sendErrorResponse(req, res, 404, `Club with ID=${req.params.id} does not exist`);
          return;
       }
       else {
-         const updatedClubsData =  clubs.filter(c => c.id !== params.id)
+         const updatedClubsData = clubs.filter(c => c.id !== params.id)
          await promises.writeFile(clubsDB, JSON.stringify(updatedClubsData));
          res.json({ message: `Club ID:${params.id} was deleted.` });
       }

@@ -7,7 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 const router = express.Router();
 const booksDB = 'booksDB.json';
 
-// Posts API Feature
+// Books - (ExchangerPage) API Feature
 router.get('/', async (req, res) => {
    try {
       const booksData = await promises.readFile(booksDB)
@@ -44,7 +44,7 @@ router.post('/', async function (req, res) {
    try {
       await indicative.validator.validate(newBook, {
          // id: 'required|string',
-         ownerId: 'required|string',
+         ownerId: 'required',
          title: 'required|string|min:1',
          bookPic: 'url',
       });
@@ -54,7 +54,7 @@ router.post('/', async function (req, res) {
       books.push(newBook);
       try {
          await promises.writeFile(booksDB, JSON.stringify(books));
-         res.json(newBook);
+         res.status(201).json(newBook);
       } catch (err) {
          console.error(`Unable to create Book: ${newBook.id}: ${newBook.title}.`);
          console.error(err);
@@ -86,7 +86,7 @@ router.put('/:id', async (req, res) => {
    try {
       await indicative.validator.validate(updatedBookData, {
          // id:'required|regex:^[0-9a-f]{24}$',
-         id: 'required|string',
+         id: 'required',
          ownerId: 'required|string',
          title: 'required|string|min:1',
          bookPic: 'url',

@@ -9,24 +9,25 @@ import questionsRouter from './routes/questions-Router';
 import booksRouter from './routes/books-Router';
 
 const HOSTNAME = 'localhost';
-const PORT = 4000;
+const PORT = 8000;
 
 const app = express();
 // CORS, logger (morgan), JSON limit -> config_____________
 app.use(cors({
    origin: 'http://localhost:3000',
-   methods: 'GET,POST'
+   methods: 'GET,POST,PUT,DELETE'
 }))
 app.use(logger('dev'))
 app.use(express.json({ limit: '10mb' }))
 //____________app_ROUTERS______(users,comments,questions,clubs,books)
 
 app
-   .use('/api/comments', commentsRouter)
-   .use('/api/clubs', clubsRouter)
-   .use('/api/users', usersRouter)
-   .use('/api/questions', questionsRouter)
-   .use('/api/books', booksRouter)
+   // .use('/api/comments', commentsRouter)
+   .use('/api/ReadingClubs', clubsRouter)
+   .use('/api/AllUsers', usersRouter)
+   .use('/api/QuestionRoom', questionsRouter)
+   .use('/api/ExchangePage', booksRouter)
+   .use('/api/', commentsRouter) //this route can be used anywhere
 
 
 //  

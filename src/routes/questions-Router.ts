@@ -7,7 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 const router = express.Router();
 const questionsDB = 'questionsDB.json';
 
-// Posts API Feature
+// questions - (QuestionRoom) API Feature
 router.get('/', async (req, res) => {
    try {
       const questionsData = await promises.readFile(questionsDB)
@@ -43,10 +43,10 @@ router.post('/', async function (req, res) {
    const newQuestion = req.body;
    try {
       await indicative.validator.validate(newQuestion, {
-         creatorId: 'required|string',
+         creatorId: 'required',
          title: 'required|string|min:2',
          content: 'required|string|min:2',
-         questionPic: 'url',
+         // questionPic: 'url',
          timeOfCreation: 'string|required',
          timeOfModification: 'string',
       });
@@ -56,7 +56,7 @@ router.post('/', async function (req, res) {
       questions.push(newQuestion);
       try {
          await promises.writeFile(questionsDB, JSON.stringify(questions));
-         res.json(newQuestion);
+         res.status(201).json(newQuestion);
       } catch (err) {
          console.error(`Unable to create Question: ${newQuestion.id}: ${newQuestion.title}.`);
          console.error(err);
@@ -70,7 +70,8 @@ router.post('/', async function (req, res) {
 
 
 
-router.put('/:id', async (req, res) => {
+// router.put('/question:id/edit', async (req, res) => {
+router.put('/question:id', async (req, res) => {
    const params = req.params;
    const questionsData = await promises.readFile(questionsDB)
    const questions = JSON.parse(questionsData.toString());
@@ -88,12 +89,12 @@ router.put('/:id', async (req, res) => {
    try {
       await indicative.validator.validate(updatedQuestionData, {
          // id:'required|regex:^[0-9a-f]{24}$',
-         creatorId: 'required|string',
+         creatorId: 'required',
          title: 'required|string|min:2',
          content: 'required|string|min:2',
-         questionPic: 'url',
-         timeOfCreation: 'string|required',
-         timeOfModification: 'string',
+         // questionPic: 'url',
+         // timeOfCreation: 'string|required',
+         // timeOfModification: 'string',
       });
       try {
          const updatedQuestion = { ...req.body, id: params.id }

@@ -1,44 +1,33 @@
 [
    {
-      "id": "02ac57ff-0a71-4bb5-a2d2-1e51dea7a7b3",
-      "creatorId": 2,
-      "name": "Club 333",
+      "id": "1",
+      "creatorId": 1,
+      "name": "Club number 1",
       "interests": [
-         "books,reading"
+         "football,Chess",
+         "Maths"
       ],
       "participants": [
+         1,
          2
+      ],
+      "banned": []
+   },
+   {
+      "id": "2",
+      "creatorId": 2,
+      "name": "222 CLub",
+      "interests": [
+         "secondClub",
+         "interest1"
+      ],
+      "participants": [
+         2,
+         1
       ],
       "banned": [
          1
       ]
-   },
-   {
-      "creatorId": "33",
-      "name": "TEST POST CLUB",
-      "interests": [
-         "interests1",
-         "interests2"
-      ],
-      "participants": [
-         "someid1",
-         "someId2"
-      ],
-      "banned": [],
-      "id": "8188823d-0f64-4544-8e32-9af576969df6"
-   },
-   {
-      "creatorId": "test",
-      "name": "TEST POST CLUB",
-      "interests": [
-         "interests1",
-         "interests2"
-      ],
-      "participants": [
-         "someid1",
-         "someId2"
-      ],
-      "banned": [],
-      "id": "5b7a7687-16a8-4bbc-92f2-4dc6a24f62da"
    }
+   
 ]

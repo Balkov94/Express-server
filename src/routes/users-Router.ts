@@ -7,7 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 const router = express.Router();
 const usersDB = 'usersDB.json';
 
-// Posts API Feature
+// users = (AllUsers) API Feature
 router.get('/', async (req, res) => {
    try {
       const usersData = await promises.readFile(usersDB)
@@ -64,7 +64,7 @@ router.post('/', async function (req, res) {
       users.push(newUser);
       try {
          await promises.writeFile(usersDB, JSON.stringify(users));
-         res.json(newUser);
+         res.status(201).json(newUser);
       } catch (err) {
          console.error(`Unable to create User: ${newUser.id}: ${newUser.title}.`);
          console.error(err);

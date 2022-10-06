@@ -7,7 +7,9 @@ const router = express.Router();
 
 const commentsDB = 'commentsDB.json';
 
-// Posts API Feature
+// ****************************************** 
+// Direct access from the API - http://localhost:8000/api
+// ****************************************** 
 router.get('/', async (req, res) => {
    try {
       const commentsData = await promises.readFile(commentsDB)
@@ -26,7 +28,7 @@ router.get('/:id', async (req, res) => {
       //   const currComment = await req.app.locals.db.collection('posts').findOne({ _id: new ObjectID(req.params.id) });
       const commentsData = await promises.readFile(commentsDB)
       const comments = JSON.parse(commentsData.toString());
-      const currComment =  comments.find(c => c.id === params.id)
+      const currComment = comments.find(c => c.id === params.id)
       if (!currComment) {
          sendErrorResponse(req, res, 404, `Comment with ID=${req.params.id} does not exist`);
          return;
@@ -45,8 +47,8 @@ router.post('/', async function (req, res) {
    try {
       await indicative.validator.validate(newComment, {
          // id: 'required|regex:^[0-9a-f]{24}',
-         creatorId: 'required|string',
-         discussionId: 'required|string',
+         creatorId: 'required',
+         discussionId: 'required',
          isClub: 'required|boolean',
          content: 'required|string|min:1|max:1000',
          timeOfCreation: 'string',
@@ -64,7 +66,7 @@ router.post('/', async function (req, res) {
       comments.push(newComment);
       try {
          await promises.writeFile(commentsDB, JSON.stringify(comments));
-         res.json(newComment);
+         res.status(201).json(newComment);
       } catch (err) {
          console.error(`Unable to create Comment: ${newComment.id}: ${newComment.title}.`);
          console.error(err);
@@ -84,7 +86,7 @@ router.put('/:id', async (req, res) => {
    const commentsData = await promises.readFile(commentsDB)
    const comments = JSON.parse(commentsData.toString());
    console.log(params)
-   const currComment =  comments.find(c => c.id === params.id)
+   const currComment = comments.find(c => c.id === params.id)
    if (!currComment) {
       sendErrorResponse(req, res, 404, `Comment with ID=${req.params.id} does not exist`);
       return;
@@ -98,15 +100,15 @@ router.put('/:id', async (req, res) => {
    try {
       await indicative.validator.validate(updatedCommentData, {
          // id:'required|regex:^[0-9a-f]{24}$',
-         creatorId: 'required|string',
-         discussionId: 'required|string',
+         creatorId: 'required',
+         discussionId: 'required',
          isClub: 'required|boolean',
          content: 'required|string|min:1|max:1000',
          timeOfCreation: 'string',
       });
       try {
          const updatedComment = { ...req.body, id: params.id }
-         const updatedCommentsDB =  comments.map(c => {
+         const updatedCommentsDB = comments.map(c => {
             if (c.id === updatedComment.id) {
                return updatedComment;
             }
@@ -141,13 +143,13 @@ router.delete('/:id', async (req, res) => {
       await indicative.validator.validate(params.id, { id: 'required|regex:^[0-9a-f]{24}$' });
       const commentsData = await promises.readFile(commentsDB);
       const comments = JSON.parse(commentsData.toString());
-      const currComment =  comments.find(c => c.id === params.id)
+      const currComment = comments.find(c => c.id === params.id)
       if (!currComment) {
          sendErrorResponse(req, res, 404, `Comment with ID=${req.params.id} does not exist`);
          return;
       }
       else {
-         const updatedComments =  comments.filter(c => c.id !== params.id)
+         const updatedComments = comments.filter(c => c.id !== params.id)
          await promises.writeFile(commentsDB, JSON.stringify(updatedComments));
          res.json({ message: `Comment ID:${params.id} was deleted.` });
       }
