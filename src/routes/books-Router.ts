@@ -3,6 +3,7 @@ import { sendErrorResponse } from '../utils';
 import * as indicative from 'indicative';
 import { promises } from 'fs';
 import { v4 as uuidv4 } from 'uuid';
+import { HOSTNAME, PORT } from '../server';
 
 const router = express.Router();
 const booksDB = 'booksDB.json';
@@ -54,7 +55,9 @@ router.post('/', async function (req, res) {
       books.push(newBook);
       try {
          await promises.writeFile(booksDB, JSON.stringify(books));
-         res.status(201).json(newBook);
+         res.status(201)
+         .location(`http://${HOSTNAME}:${PORT}/api/ExchangePage/${newBook.id }`)
+         .json(newBook);
       } catch (err) {
          console.error(`Unable to create Book: ${newBook.id}: ${newBook.title}.`);
          console.error(err);

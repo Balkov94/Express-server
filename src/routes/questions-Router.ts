@@ -3,6 +3,7 @@ import { sendErrorResponse } from '../utils';
 import * as indicative from 'indicative';
 import { promises } from 'fs';
 import { v4 as uuidv4 } from 'uuid';
+import { HOSTNAME, PORT } from '../server';
 
 const router = express.Router();
 const questionsDB = 'questionsDB.json';
@@ -56,7 +57,9 @@ router.post('/', async function (req, res) {
       questions.push(newQuestion);
       try {
          await promises.writeFile(questionsDB, JSON.stringify(questions));
-         res.status(201).json(newQuestion);
+         res.status(201)
+         .location(`http://${HOSTNAME}:${PORT}/api/QuestionRoom/${newQuestion.id }`)
+         .json(newQuestion);
       } catch (err) {
          console.error(`Unable to create Question: ${newQuestion.id}: ${newQuestion.title}.`);
          console.error(err);

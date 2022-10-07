@@ -3,6 +3,7 @@ import { sendErrorResponse } from '../utils';
 import * as indicative from 'indicative';
 import { promises } from 'fs';
 import { v4 as uuidv4 } from 'uuid';
+import { HOSTNAME, PORT } from '../server';
 
 const router = express.Router();
 const usersDB = 'usersDB.json';
@@ -61,10 +62,18 @@ router.post('/', async function (req, res) {
       const usersData = await promises.readFile(usersDB)
       const users = JSON.parse(usersData.toString());
       newUser.id = uuidv4();
+       // 1. Unique username and mail =>  register
+       if (users.some(user =>user.username === newUser.username || user.mail === newUser.mail)) {
+         sendErrorResponse(req, res, 400, `Invalid User data: Username or email are already taken`)
+         return;
+      }
+      
       users.push(newUser);
       try {
          await promises.writeFile(usersDB, JSON.stringify(users));
-         res.status(201).json(newUser);
+         res.status(201)
+         .location(`http://${HOSTNAME}:${PORT}/api/AllUsers/${newUser.id }`)
+         .json(newUser);
       } catch (err) {
          console.error(`Unable to create User: ${newUser.id}: ${newUser.title}.`);
          console.error(err);

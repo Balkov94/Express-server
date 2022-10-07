@@ -1,20 +1,20 @@
 [
    {
-      "id": 1,
-      "ownerId": 1,
+      "id": "1",
+      "ownerId": "1",
       "title": "Name book 111 owner one",
       "bookPic": "https://cdn.ozone.bg/media/catalog/product/cache/1/small_image/178x222/9df78eab33525d08d6e5fb8d27136e95/n/a/03a2fdc71b1406897448b29581baac64/nay-dobroto-ot-seneka-meki-koritsi-20.jpg"
-    },
-    {
-      "id": 2,
-      "ownerId": 1,
+   },
+   {
+      "id": "2",
+      "ownerId": "1",
       "title": "Name book 222 owner one",
       "bookPic": "https://cdn.ozone.bg/media/catalog/product/cache/1/small_image/178x222/9df78eab33525d08d6e5fb8d27136e95/b/r/0bab0532764d29459d4ea17347d7e7b0/brayan-dzhonsan--litsata-na-brayan-meki-koritsi-20.jpg"
-    },
-    {
-      "id": 3,
-      "ownerId": 2,
+   },
+   {
+      "id": "3",
+      "ownerId": "2",
       "title": "Name book 333 owner 2",
       "bookPic": "https://cdn.ozone.bg/media/catalog/product/cache/1/small_image/178x222/9df78eab33525d08d6e5fb8d27136e95/k/r/f5e1008ee25becc8930535e886f92c77/krasiva-daniel-stiyl-20.jpg"
-    }
+   }
 ]

@@ -3,6 +3,7 @@ import { sendErrorResponse } from '../utils';
 import * as indicative from 'indicative';
 import { promises } from 'fs';
 import { v4 as uuidv4 } from 'uuid';
+import { HOSTNAME, PORT } from '../server';
 const router = express.Router();
 
 const commentsDB = 'commentsDB.json';
@@ -66,7 +67,9 @@ router.post('/', async function (req, res) {
       comments.push(newComment);
       try {
          await promises.writeFile(commentsDB, JSON.stringify(comments));
-         res.status(201).json(newComment);
+         res.status(201)
+         .location(`http://${HOSTNAME}:${PORT}/api/${newComment.id }`)
+         .json(newComment);
       } catch (err) {
          console.error(`Unable to create Comment: ${newComment.id}: ${newComment.title}.`);
          console.error(err);

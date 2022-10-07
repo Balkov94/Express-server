@@ -2,14 +2,17 @@ import * as express from 'express';
 import * as cors from 'cors';
 import * as logger from 'morgan';
 import { sendErrorResponse } from './utils';
+// Router imports
 import commentsRouter from './routes/comments-Router';
 import clubsRouter from './routes/clubs-Router';
 import usersRouter from './routes/users-Router';
 import questionsRouter from './routes/questions-Router';
 import booksRouter from './routes/books-Router';
+import loginRouter from './routes/login-Router';
+import registerRouter from './routes/register-Router';
 
-const HOSTNAME = 'localhost';
-const PORT = 8000;
+export const HOSTNAME = 'localhost';
+export const PORT = 8000;
 
 const app = express();
 // CORS, logger (morgan), JSON limit -> config_____________
@@ -27,7 +30,13 @@ app
    .use('/api/AllUsers', usersRouter)
    .use('/api/QuestionRoom', questionsRouter)
    .use('/api/ExchangePage', booksRouter)
-   .use('/api/', commentsRouter) //this route can be used anywhere
+   .use('/api/Login', loginRouter)
+   .use('/api/Register', registerRouter)
+    // need refactoring
+    .use('/api/', commentsRouter) //this route can be used anywhere
+   .use((req, res) => {
+      sendErrorResponse(req, res, 404, `This is not the page you are looking for :)`);
+  });
 
 
 //  

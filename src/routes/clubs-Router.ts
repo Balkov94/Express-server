@@ -3,6 +3,7 @@ import { sendErrorResponse } from '../utils';
 import * as indicative from 'indicative';
 import { promises } from 'fs';
 import { v4 as uuidv4 } from 'uuid';
+import { HOSTNAME, PORT } from '../server';
 
 const router = express.Router();
 const clubsDB = 'clubsDB.json';
@@ -55,7 +56,9 @@ router.post('/', async function (req, res) {
       clubs.push(newClub);
       try {
          await promises.writeFile(clubsDB, JSON.stringify(clubs));
-         res.status(201).json(newClub);
+         res.status(201)
+            .location(`http://${HOSTNAME}:${PORT}/api/ReadingClubs/club${newClub.id }`)
+            .json(newClub);
       } catch (err) {
          console.error(`Unable to create Club: ${newClub.id}: ${newClub.title}.`);
          console.error(err);
