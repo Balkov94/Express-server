@@ -46,8 +46,8 @@ router.post('/', async function (req, res) {
       await indicative.validator.validate(newBook, {
          // id: 'required|string',
          ownerId: 'required',
-         title: 'required|string|min:1',
-         bookPic: 'url',
+         title: 'required|string|min:2',
+         bookPic: 'string',
       });
       const booksData = await promises.readFile(booksDB)
       const books = JSON.parse(booksData.toString());
@@ -91,8 +91,8 @@ router.put('/:id', async (req, res) => {
          // id:'required|regex:^[0-9a-f]{24}$',
          id: 'required',
          ownerId: 'required|string',
-         title: 'required|string|min:1',
-         bookPic: 'url',
+         title: 'required|string|min:2',
+         bookPic: 'string',
       });
       try {
          const updatedBook = { ...req.body, id: params.id }

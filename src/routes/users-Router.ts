@@ -49,12 +49,12 @@ router.post('/', async function (req, res) {
          lname: 'required|string|min:2',
          username: 'required|string|min:2',
          password: 'required|string|min:2',
-         phone: 'string|min:10|max:10',
-         mail: 'required|email',
-         userPic: 'url',
+         // phone: 'string|min:10|max:10',
+         // mail: 'required|email',
+         // userPic: 'url',
          description: 'string',
-         role: 'required|string',
-         status: 'required|string',
+         role: 'required|number',
+         status: 'required|number',
          timeOfCreation: 'required|string',
          timeOfModification: 'string'
 
@@ -87,7 +87,7 @@ router.post('/', async function (req, res) {
 
 
 
-router.put('/:id', async (req, res) => {
+router.put("/Edit-form/:id", async (req, res) => {
    const params = req.params;
    const usersData = await promises.readFile(usersDB)
    const users = JSON.parse(usersData.toString());
@@ -109,12 +109,12 @@ router.put('/:id', async (req, res) => {
          lname: 'required|string|min:2',
          username: 'required|string|min:2',
          password: 'required|string|min:2',
-         phone: 'string|min:10|max:10',
-         mail: 'required|email',
-         userPic: 'url',
+         // phone: 'string|min:10|max:10',
+         // mail: 'required|email',
+         // userPic: 'url',
          description: 'string',
-         role: 'required|string',
-         status: 'required|string',
+         role: 'required|number',
+         status: 'required|number',
          timeOfCreation: 'required|string',
          timeOfModification: 'string'
       });

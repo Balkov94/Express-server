@@ -34,9 +34,9 @@ app
    .use('/api/Register', registerRouter)
     // need refactoring
     .use('/api/', commentsRouter) //this route can be used anywhere
-   .use((req, res) => {
-      sendErrorResponse(req, res, 404, `This is not the page you are looking for :)`);
-  });
+//    .use((req, res) => {
+//       sendErrorResponse(req, res, 404, `This is not the page you are looking for :)`);
+//   });
 
 
 //  
