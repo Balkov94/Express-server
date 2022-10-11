@@ -1,1 +1,30 @@
-[{"creatorId":"1","discussionId":"1","isClub":false,"content":"Q1 c1","timeOfCreation":"Thu Oct 06 2022 4:53:06 PM ","timeOfModification":null,"id":"359bd122-52e3-4dd5-8eed-bc078a993232"},{"creatorId":"1","discussionId":"2","isClub":false,"content":"Q2 c1","timeOfCreation":"Thu Oct 06 2022 4:53:29 PM ","timeOfModification":null,"id":"cfec6205-725a-47e4-9deb-94c3847e7ac3"},{"id":"a0caa380-2f85-4b60-8d69-6fb804e596b8","discussionId":"1","isClub":false,"creatorId":"1","content":"q1c2+","timeOfCreation":"Fri Oct 07 2022 3:02:36 PM ","timeOfModification":"Fri Oct 07 2022 3:02:40 PM "},{"creatorId":"1","discussionId":"1","isClub":true,"content":"c1c1","timeOfCreation":"Fri Oct 07 2022 3:04:17 PM ","timeOfModification":null,"id":"48c148ab-5034-4818-a3ce-a84d1f4ef0a6"},{"id":"eaa98532-6e6a-4ad3-8b4d-4bb4b7420f6b","discussionId":"1","isClub":true,"creatorId":"1","content":"c1c2","timeOfCreation":"Fri Oct 07 2022 3:04:20 PM ","timeOfModification":"Sat Oct 08 2022 11:48:33 AM "},{"creatorId":"1","discussionId":"2","isClub":true,"content":"c2c1","timeOfCreation":"Fri Oct 07 2022 3:04:35 PM ","timeOfModification":null,"id":"8f7df18a-dfe9-47e8-bd65-a10036193346"}]
+[
+   {
+      "creatorId": "1",
+      "discussionId": "1",
+      "isClub": false,
+      "content": "Q1 c1",
+      "timeOfCreation": "Thu Oct 06 2022 4:53:06 PM ",
+      "timeOfModification": null,
+      "id": "359bd122-52e3-4dd5-8eed-bc078a993232"
+   },
+   {
+      "creatorId": "1",
+      "discussionId": "2",
+      "isClub": false,
+      "content": "Q2 c1",
+      "timeOfCreation": "Thu Oct 06 2022 4:53:29 PM ",
+      "timeOfModification": null,
+      "id": "cfec6205-725a-47e4-9deb-94c3847e7ac3"
+   },
+   {
+      "id": "a0caa380-2f85-4b60-8d69-6fb804e596b8",
+      "discussionId": "1",
+      "isClub": false,
+      "creatorId": "1",
+      "content": "q1c2+",
+      "timeOfCreation": "Fri Oct 07 2022 3:02:36 PM ",
+      "timeOfModification": "Fri Oct 07 2022 3:02:40 PM "
+   }
+  
+]

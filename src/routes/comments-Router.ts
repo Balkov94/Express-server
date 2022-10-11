@@ -1,21 +1,16 @@
 import * as express from 'express';
-import { sendErrorResponse } from '../utils';
+import { replaceUnderscoreId, sendErrorResponse, URLIdValidation } from '../utils';
 import * as indicative from 'indicative';
-import { promises } from 'fs';
-import { v4 as uuidv4 } from 'uuid';
 import { HOSTNAME, PORT } from '../server';
+import { ObjectId } from 'mongodb';
 const router = express.Router();
 
-const commentsDB = 'commentsDB.json';
-
-// ****************************************** 
-// Direct access from the API - http://localhost:8000/api
-// ****************************************** 
 router.get('/', async (req, res) => {
    try {
-      const commentsData = await promises.readFile(commentsDB)
-      const comments = JSON.parse(commentsData.toString());
-      res.json(comments);
+      const allComments = await req.app.locals.db.collection("comments").find().toArray();
+      console.log(allComments);
+      const result = replaceUnderscoreId(allComments);
+      res.status(200).json(result);
    } catch (err) {
       sendErrorResponse(req, res, 500, `Server error: ${err.message}`, err);
    }
@@ -23,27 +18,23 @@ router.get('/', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
    const params = req.params;
+   URLIdValidation(req, res, params.id);
    try {
-      await indicative.validator.validate(params.id, { id: 'required|regex:^[0-9a-f]{24}$' });
-      // await indicative.validator.validate(params, { id: 'required|regex:^[0-9a-f]{24}$' });
-      //   const currComment = await req.app.locals.db.collection('posts').findOne({ _id: new ObjectID(req.params.id) });
-      const commentsData = await promises.readFile(commentsDB)
-      const comments = JSON.parse(commentsData.toString());
-      const currComment = comments.find(c => c.id === params.id)
+      const currComment = await req.app.locals.db.collection("comments").findOne({ _id: new ObjectId(params.id) });
+      console.log(currComment);
       if (!currComment) {
          sendErrorResponse(req, res, 404, `Comment with ID=${req.params.id} does not exist`);
          return;
       }
-      res.json(currComment);
+      const result = replaceUnderscoreId(currComment);
+      res.status(200).json(result);
    } catch (errors) {
-      sendErrorResponse(req, res, 400, `Invalid Comment data: ${errors.map(e => e.message).join(', ')}`, errors);
+      sendErrorResponse(req, res, 400, `Invalid Comment data`, errors);
    }
 });
 
 
 router.post('/', async function (req, res) {
-   console.log("Request body:");
-   console.log(JSON.stringify(req.body))
    const newComment = req.body;
    try {
       await indicative.validator.validate(newComment, {
@@ -61,17 +52,18 @@ router.post('/', async function (req, res) {
          // keywords: 'array',
          // 'keywords.*': 'string'
       });
-      const commentsData = await promises.readFile(commentsDB)
-      const comments = JSON.parse(commentsData.toString());
-      newComment.id = uuidv4();
-      comments.push(newComment);
       try {
-         await promises.writeFile(commentsDB, JSON.stringify(comments));
-         res.status(201)
-         .location(`http://${HOSTNAME}:${PORT}/api/${newComment.id }`)
-         .json(newComment);
+         delete newComment.id;
+         const { acknowledged, insertedId } = await req.app.locals.db.collection('comments').insertOne(newComment);
+         if (acknowledged) {
+            console.log(`Successfully inserted 1 document with ID ${insertedId}`);
+            const result=replaceUnderscoreId(newComment);
+            res.status(201)
+               .location(`http://${HOSTNAME}:${PORT}/api/${insertedId}`)
+               .json(result);
+         }
       } catch (err) {
-         console.error(`Unable to create Comment: ${newComment.id}: ${newComment.title}.`);
+         console.error(`Unable to create Comment: Title:${newComment.title}.`);
          console.error(err);
          sendErrorResponse(req, res, 500, `Server error: ${err.message}`, err);
       }
@@ -82,26 +74,21 @@ router.post('/', async function (req, res) {
 });
 
 
-// router.put('/:id', verifyToken, verifyRole(['Author','Admin']), async (req, res) => {
 router.put('/:id', async (req, res) => {
-   //  const old = await req.app.locals.db.collection('posts').findOne({ _id: new ObjectID(req.params.id) });
    const params = req.params;
-   const commentsData = await promises.readFile(commentsDB)
-   const comments = JSON.parse(commentsData.toString());
-   console.log(params)
-   const currComment = comments.find(c => c.id === params.id)
-   if (!currComment) {
-      sendErrorResponse(req, res, 404, `Comment with ID=${req.params.id} does not exist`);
+   URLIdValidation(req, res, params.id);
+   const aldComment = await req.app.locals.db.collection('comments').findOne({ _id: new ObjectId(params.id) });
+   if (!aldComment) {
+      sendErrorResponse(req, res, 404, `Comment with ID=${params.id} does not exist`);
       return;
    }
-   const updatedCommentData = req.body;
-   // if (currComment._id.toString() !== post.id) {
-   if (currComment.id.toString() !== updatedCommentData.id) {
-      sendErrorResponse(req, res, 400, `Comment ID=${updatedCommentData.id} does not match URL ID=${req.params.id}`);
+   const updatedComment = req.body;
+   if (aldComment._id.toString() !== updatedComment.id) {
+      sendErrorResponse(req, res, 400, `Comment ID=${updatedComment.id} does not match URL ID=${params.id}`);
       return;
    }
    try {
-      await indicative.validator.validate(updatedCommentData, {
+      await indicative.validator.validate(updatedComment, {
          // id:'required|regex:^[0-9a-f]{24}$',
          creatorId: 'required',
          discussionId: 'required',
@@ -110,70 +97,41 @@ router.put('/:id', async (req, res) => {
          timeOfCreation: 'string',
       });
       try {
-         const updatedComment = { ...req.body, id: params.id }
-         const updatedCommentsDB = comments.map(c => {
-            if (c.id === updatedComment.id) {
-               return updatedComment;
-            }
-            return c;
-         })
-         await promises.writeFile(commentsDB, JSON.stringify(updatedCommentsDB));
-         res.json(updatedComment);
-
-         // r = await req.app.locals.db.collection('posts').updateOne({ _id: new ObjectID(req.params.id) }, { $set: post });
-         // if (r.result.ok) {
-         //    console.log(`Updated post: ${JSON.stringify(post)}`);
-         //    if (r.modifiedCount === 0) {
-         //       console.log(`The old and the new posts are the same.`);
-         //    }
-         //    res.json(post);
-         // } else {
-         //    sendErrorResponse(req, res, 500, `Unable to update post: ${post.id}: ${post.title}`);
-         // }
+         delete updatedComment.id
+         const { acknowledged, modifiedCount } = await req.app.locals.db.collection('comments').replaceOne({ _id: new ObjectId(params.id) }, updatedComment)
+         if (acknowledged && modifiedCount === 1) {
+            console.log(`Updated Comment: ${JSON.stringify(updatedComment)}`);
+            res.json({...updatedComment,id:params.id});
+         } else {
+            sendErrorResponse(req, res, 500, `Unable to update Comment: ${updatedComment.id}: ${updatedComment.title}`);
+            return;
+         }
       } catch (err) {
-         console.log(`Unable to update post: ${updatedCommentData.id}: ${updatedCommentData.title}`);
+         console.log(`Unable to update Comment: ${updatedComment.id}: ${updatedComment.title}`);
          console.error(err);
          sendErrorResponse(req, res, 500, `Server error: ${err.message}`, err);
       }
    } catch (errors) {
-      sendErrorResponse(req, res, 400, `Invalid post data: ${errors.map(e => e.message).join(', ')}`, errors);
+      sendErrorResponse(req, res, 400, `Invalid Comment data: ${errors.map(e => e.message).join(', ')}`, errors);
    }
 });
 
 router.delete('/:id', async (req, res) => {
    const params = req.params;
+   URLIdValidation(req, res, params.id);
    try {
-      await indicative.validator.validate(params.id, { id: 'required|regex:^[0-9a-f]{24}$' });
-      const commentsData = await promises.readFile(commentsDB);
-      const comments = JSON.parse(commentsData.toString());
-      const currComment = comments.find(c => c.id === params.id)
-      if (!currComment) {
+      const deletedComment = await req.app.locals.db.collection('comments').findOneAndDelete({ _id: new ObjectId(params.id) });
+      if (!deletedComment.ok) {
+         sendErrorResponse(req, res, 500, `Error deleting the document in Mongodb`);
+         return;
+      }
+      if (deletedComment.lastErrorObject.n === 0) {
          sendErrorResponse(req, res, 404, `Comment with ID=${req.params.id} does not exist`);
          return;
       }
-      else {
-         const updatedComments = comments.filter(c => c.id !== params.id)
-         await promises.writeFile(commentsDB, JSON.stringify(updatedComments));
-         res.json({ message: `Comment ID:${params.id} was deleted.` });
-      }
-      //   const old = await req.app.locals.db.collection('posts').findOne({ _id: new ObjectID(req.params.id) });
-      //   if (!old) {
-      //       sendErrorResponse(req, res, 404, `Comment with ID=${req.params.id} does not exist`);
-      //       return;
-      //   }
-      //   replace_id(old)
-      //   const r = await req.app.locals.db.collection('posts').deleteOne({ _id: new ObjectID(req.params.id) });
-      //   if(r.result.ok && r.deletedCount === 1) {
-      //       console.log(`Deleted post: ${old.id}: ${old.title}`);
-      //       res.json(old);
-      //   } else {
-      //       console.log(`Unable to delete post: ${post.id}: ${post.title}`);
-      //       sendErrorResponse(req, res, 500, `Unable to delete post: ${old.id}: ${old.title}`);
-      //   }
-
-
+      res.status(200).json(deletedComment.value);
    } catch (errors) {
-      sendErrorResponse(req, res, 400, `Invalid post data: ${errors.map(e => e.message).join(', ')}`, errors);
+      sendErrorResponse(req, res, 400, `Invalid Comment data: ${errors.map(e => e.message).join(', ')}`, errors);
    }
 });
 

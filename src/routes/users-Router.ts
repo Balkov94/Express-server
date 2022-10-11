@@ -1,19 +1,16 @@
 import * as express from 'express';
-import { sendErrorResponse } from '../utils';
+import { replaceUnderscoreId, sendErrorResponse, URLIdValidation } from '../utils';
 import * as indicative from 'indicative';
-import { promises } from 'fs';
-import { v4 as uuidv4 } from 'uuid';
 import { HOSTNAME, PORT } from '../server';
-
+import { ObjectId } from 'mongodb';
 const router = express.Router();
-const usersDB = 'usersDB.json';
 
-// users = (AllUsers) API Feature
 router.get('/', async (req, res) => {
    try {
-      const usersData = await promises.readFile(usersDB)
-      const users = JSON.parse(usersData.toString());
-      res.json(users);
+      const allUsers= await req.app.locals.db.collection("users").find().toArray();
+      console.log(allUsers);
+      const result = replaceUnderscoreId(allUsers);
+      res.status(200).json(result);
    } catch (err) {
       sendErrorResponse(req, res, 500, `Server error: ${err.message}`, err);
    }
@@ -21,21 +18,18 @@ router.get('/', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
    const params = req.params;
+   URLIdValidation(req, res, params.id);
    try {
-      await indicative.validator.validate(params.id, { id: 'required|regex:^[0-9a-f]{24}$' });
-      // await indicative.validator.validate(params, { id: 'required|regex:^[0-9a-f]{24}$' });
-      //   const currComment = await req.app.locals.db.collection('posts').findOne({ _id: new ObjectID(req.params.id) });
-      const usersData = await promises.readFile(usersDB)
-      const users = JSON.parse(usersData.toString());
-      const currUser = users.find(c => c.id === params.id)
+      const currUser = await req.app.locals.db.collection("users").findOne({ _id: new ObjectId(params.id) });
       console.log(currUser);
       if (!currUser) {
          sendErrorResponse(req, res, 404, `User with ID=${req.params.id} does not exist`);
          return;
       }
-      res.json(currUser);
+      const result = replaceUnderscoreId(currUser);
+      res.status(200).json(result);
    } catch (errors) {
-      sendErrorResponse(req, res, 400, `Invalid User data: ${errors.map(e => e.message).join(', ')}`, errors);
+      sendErrorResponse(req, res, 400, `Invalid User data`, errors);
    }
 });
 
@@ -59,23 +53,28 @@ router.post('/', async function (req, res) {
          timeOfModification: 'string'
 
       });
-      const usersData = await promises.readFile(usersDB)
-      const users = JSON.parse(usersData.toString());
-      newUser.id = uuidv4();
-       // 1. Unique username and mail =>  register
-       if (users.some(user =>user.username === newUser.username || user.mail === newUser.mail)) {
-         sendErrorResponse(req, res, 400, `Invalid User data: Username or email are already taken`)
-         return;
-      }
-      
-      users.push(newUser);
       try {
-         await promises.writeFile(usersDB, JSON.stringify(users));
-         res.status(201)
-         .location(`http://${HOSTNAME}:${PORT}/api/AllUsers/${newUser.id }`)
-         .json(newUser);
+         const usernameCheck = await req.app.locals.db.collection("users").findOne({ username: newUser.username });
+         const mailCheck = await req.app.locals.db.collection("users").findOne({ mail: newUser.mail });
+         if (usernameCheck) {
+            sendErrorResponse(req, res, 400, `Server error: Username is already taken`);
+            return;
+         }
+         if (mailCheck) {
+            sendErrorResponse(req, res, 400, `Server error: E-mail is already taken`);
+            return;
+         }
+         delete newUser.id;
+         const { acknowledged, insertedId } = await req.app.locals.db.collection('users').insertOne(newUser);
+         if (acknowledged) {
+            console.log(`Successfully inserted 1 document with ID ${insertedId}`);
+            const result = replaceUnderscoreId(newUser);
+            res.status(201)
+               .location(`http://${HOSTNAME}:${PORT}/api/AllUsers/${insertedId}`)
+               .json(result);
+         }
       } catch (err) {
-         console.error(`Unable to create User: ${newUser.id}: ${newUser.title}.`);
+         console.error(`Unable to create User`);
          console.error(err);
          sendErrorResponse(req, res, 500, `Server error: ${err.message}`, err);
       }
@@ -87,23 +86,23 @@ router.post('/', async function (req, res) {
 
 
 
-router.put("/Edit-form/:id", async (req, res) => {
+router.put("/Edit-form:id", async (req, res) => {
+   // router.put("/Edit-form/:id", async (req, res) => {
+   // router.put("/:id", async (req, res) => {
    const params = req.params;
-   const usersData = await promises.readFile(usersDB)
-   const users = JSON.parse(usersData.toString());
-   console.log(params)
-   const currUser = users.find(c => c.id === params.id)
-   if (!currUser) {
-      sendErrorResponse(req, res, 404, `User with ID=${req.params.id} does not exist`);
+   URLIdValidation(req, res, params.id);
+   const oldUser = await req.app.locals.db.collection('users').findOne({ _id: new ObjectId(params.id) });
+   if (!oldUser) {
+      sendErrorResponse(req, res, 404, `User with ID=${params.id} does not exist`);
       return;
    }
-   const newUserData = req.body;
-   if (currUser.id.toString() !== newUserData.id) {
-      sendErrorResponse(req, res, 400, `User ID=${newUserData.id} does not match URL ID=${req.params.id}`);
+   const updatedUser = req.body;
+   if (oldUser._id.toString() !== updatedUser.id) {
+      sendErrorResponse(req, res, 400, `User ID=${updatedUser.id} does not match URL ID=${params.id}`);
       return;
    }
    try {
-      await indicative.validator.validate(newUserData, {
+      await indicative.validator.validate(updatedUser, {
          // id:'required|regex:^[0-9a-f]{24}$',
          fname: 'required|string|min:2',
          lname: 'required|string|min:2',
@@ -119,18 +118,27 @@ router.put("/Edit-form/:id", async (req, res) => {
          timeOfModification: 'string'
       });
       try {
-         const updatedUser = { ...req.body, id: params.id }
-         const updatedUsersDB = users.map(c => {
-            if (c.id === updatedUser.id) {
-               return updatedUser;
-            }
-            return c;
-         })
-         await promises.writeFile(usersDB, JSON.stringify(updatedUsersDB));
-         res.json(updatedUser);
-
+         const usernameCheck = await req.app.locals.db.collection("users").findOne({ username: updatedUser.username });
+         const mailCheck = await req.app.locals.db.collection("users").findOne({ mail: updatedUser.mail });
+         if (usernameCheck !== null && String(usernameCheck._id) !== params.id) {
+            sendErrorResponse(req, res, 400, `Server error: Username is already taken`);
+            return;
+         }
+         if (mailCheck !== null && String(mailCheck._id) !== params.id) {
+            sendErrorResponse(req, res, 400, `Server error: E-mail is already taken`);
+            return;
+         }
+         delete updatedUser.id
+         const { acknowledged, modifiedCount } = await req.app.locals.db.collection('users').replaceOne({ _id: new ObjectId(params.id) }, updatedUser)
+         if (acknowledged && modifiedCount === 1) {
+            console.log(`Updated User: ${JSON.stringify(updatedUser)}`);
+            res.json(updatedUser);
+         } else {
+            sendErrorResponse(req, res, 500, `Unable to update User: ${updatedUser.id}: ${updatedUser.title}`);
+            return;
+         }
       } catch (err) {
-         console.log(`Unable to update User: ${newUserData.id}: ${newUserData.title}`);
+         console.log(`Unable to update User: ${updatedUser.id}: ${updatedUser.title}`);
          console.error(err);
          sendErrorResponse(req, res, 500, `Server error: ${err.message}`, err);
       }
@@ -139,28 +147,23 @@ router.put("/Edit-form/:id", async (req, res) => {
    }
 });
 
+
 router.delete('/:id', async (req, res) => {
    const params = req.params;
+   URLIdValidation(req, res, params.id);
    try {
-      // await indicative.validator.validate(params.id, { id: 'required|regex:^[0-9a-f]{24}$' });
-      const usersData = await promises.readFile(usersDB);
-      const users = JSON.parse(usersData.toString());
-      const currUser = users.find(c => c.id === params.id)
-      if (!currUser) {
+      const deleteUser = await req.app.locals.db.collection('users').findOneAndDelete({ _id: new ObjectId(params.id) });
+      if (!deleteUser.ok) {
+         sendErrorResponse(req, res, 500, `Error deleting the document in Mongodb`);
+         return;
+      }
+      if (deleteUser.lastErrorObject.n === 0) {
          sendErrorResponse(req, res, 404, `User with ID=${req.params.id} does not exist`);
          return;
       }
-      else {
-         const updatedUsersDB = users.filter(user => user.id !== params.id)
-         console.log(updatedUsersDB);
-         await promises.writeFile(usersDB, JSON.stringify(updatedUsersDB));
-         res.json({ message: `User ID:${params.id} was deleted.` });   
-         res.json(updatedUsersDB);
-      }
-
+      res.status(200).json(deleteUser.value);
    } catch (errors) {
       sendErrorResponse(req, res, 400, `Invalid User data: ${errors.map(e => e.message).join(', ')}`, errors);
-
    }
 });
 
