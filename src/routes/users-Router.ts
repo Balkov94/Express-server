@@ -8,7 +8,7 @@ const router = express.Router();
 router.get('/', async (req, res) => {
    try {
       const allUsers= await req.app.locals.db.collection("users").find().toArray();
-      console.log(allUsers);
+      // console.log(allUsers);
       const result = replaceUnderscoreId(allUsers);
       res.status(200).json(result);
    } catch (err) {

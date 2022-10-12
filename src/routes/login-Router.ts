@@ -10,7 +10,9 @@ const usersDB = 'usersDB.json';
 //some authentication stuff here
 //************************************** */
 router.post('/', async function (req, res) {
-   const currInput= req.body;
+   const currInput = new LoginInput(req.body.username, req.body.password);
+   console.log(currInput);
+   
    try {
       await indicative.validator.validate(currInput, {
          username: 'required|string|min:2',
@@ -39,3 +41,10 @@ router.post('/', async function (req, res) {
 
 export default router;
 
+
+class LoginInput {
+   constructor(
+      readonly username: string,
+      readonly password: string,
+   ) { }
+}
