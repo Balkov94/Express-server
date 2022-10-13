@@ -9,14 +9,12 @@ router.post('/', async function (req, res) {
    const newUser = req.body;
    try {
       await indicative.validator.validate(newUser, {
-         // id: 'required|string',
          fname: 'required|string|min:2',
          lname: 'required|string|min:2',
-         username: 'required|string|min:2',
-         password: 'required|string|min:2',
+         username: 'required|string|min:5|max:15',
+         password: 'required|string|min:5',
          phone: 'string|min:10|max:10',
-         mail: 'required|email',
-         userPic: 'url',
+         mail: 'required|string',
          description: 'string',
          role: 'required',
          status: 'required',
@@ -50,7 +48,7 @@ router.post('/', async function (req, res) {
       }
    } catch (errors) {
       console.log(errors)
-      sendErrorResponse(req, res, 400, `Invalid User data: ${errors.map(e => e.message).join(', ')}`, errors);
+      sendErrorResponse(req, res, 400, `Invalid User data: ${errors?.map(e => e.message).join(', ')}`, errors);
    }
 });
 

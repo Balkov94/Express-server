@@ -40,9 +40,8 @@ router.post('/', async function (req, res) {
    try {
       await indicative.validator.validate(newQuestion, {
          creatorId: 'required',
-         title: 'required|string|min:2',
+         title: 'required|string|min:2|max:30',
          content: 'required|string|min:2',
-         // questionPic: 'url',
          timeOfCreation: 'string|required',
          timeOfModification: 'string',
       });
@@ -86,13 +85,12 @@ router.put('/question:id', async (req, res) => {
    }
    try {
       await indicative.validator.validate(updatedQuestion, {
-         // id:'required|regex:^[0-9a-f]{24}$',
+         id:'required|regex:^[0-9a-f]{24}$',
          creatorId: 'required',
-         title: 'required|string|min:2',
-         content: 'required|string|min:2',
-         // questionPic: 'url',
-         // timeOfCreation: 'string|required',
-         // timeOfModification: 'string',
+         title: 'required|string|min:2|max:30',
+         content: 'required|string|min:2|max:512',
+         timeOfCreation: 'string|required',
+         timeOfModification: 'string',
       });
       try {
          delete updatedQuestion.id

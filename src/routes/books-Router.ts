@@ -38,9 +38,8 @@ router.post('/', async function (req, res) {
    const newBook = req.body;
    try {
       await indicative.validator.validate(newBook, {
-         // id: 'required|string',
          ownerId: 'required',
-         title: 'required|string|min:2',
+         title: 'required|string|min:2|max:100',
          bookPic: 'string',
       });
       try {
@@ -79,10 +78,9 @@ router.put('/:id', async (req, res) => {
    }
    try {
       await indicative.validator.validate(updatedBookData, {
-         // id:'required|regex:^[0-9a-f]{24}$',
-         id: 'required',
-         ownerId: 'required|string',
-         title: 'required|string|min:2',
+         id:'required|regex:^[0-9a-f]{24}$',
+         ownerId: 'required',
+         title: 'required|string|min:2|max:100',
          bookPic: 'string',
       });
       try {

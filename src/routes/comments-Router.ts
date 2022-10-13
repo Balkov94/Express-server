@@ -38,19 +38,12 @@ router.post('/', async function (req, res) {
    const newComment = req.body;
    try {
       await indicative.validator.validate(newComment, {
-         // id: 'required|regex:^[0-9a-f]{24}',
          creatorId: 'required',
          discussionId: 'required',
          isClub: 'required|boolean',
          content: 'required|string|min:1|max:1000',
-         timeOfCreation: 'string',
-         // SKIP timeOfModification no null type NEED -> null or string
-         // timeOfModification:,
-         // imageUrl: 'url',
-         // categories: 'array',
-         // 'categories.*': 'string',
-         // keywords: 'array',
-         // 'keywords.*': 'string'
+         timeOfCreation: 'required|string',
+         timeOfModification:'string'
       });
       try {
          delete newComment.id;
@@ -89,12 +82,13 @@ router.put('/:id', async (req, res) => {
    }
    try {
       await indicative.validator.validate(updatedComment, {
-         // id:'required|regex:^[0-9a-f]{24}$',
+         id:'required|regex:^[0-9a-f]{24}$',
          creatorId: 'required',
          discussionId: 'required',
          isClub: 'required|boolean',
          content: 'required|string|min:1|max:1000',
-         timeOfCreation: 'string',
+         timeOfCreation: 'required|string',
+         timeOfModification:'string'
       });
       try {
          delete updatedComment.id

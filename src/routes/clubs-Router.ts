@@ -40,7 +40,7 @@ router.post('/', async function (req, res) {
    try {
       await indicative.validator.validate(newClub, {
          creatorId: 'required',
-         name: 'required|string',
+         name: 'required|string|min:2|max:22',
          interests: 'array|min:2|max:6',
          participants: 'array|min:1',
          banned: 'array'
@@ -83,9 +83,9 @@ router.put('/:id', async (req, res) => {
    }
    try {
       await indicative.validator.validate(updatedClubData, {
-         // id:'required|regex:^[0-9a-f]{24}$',
+         id:'required|regex:^[0-9a-f]{24}$',
          creatorId: 'required',
-         name: 'required|string',
+         name: 'required|string|min:2|max:22',
          interests: 'array|min:2|max:6',
          participants: 'array|min:1',
          banned: 'array'

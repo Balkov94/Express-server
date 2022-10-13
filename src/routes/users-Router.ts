@@ -8,7 +8,6 @@ const router = express.Router();
 router.get('/', async (req, res) => {
    try {
       const allUsers= await req.app.locals.db.collection("users").find().toArray();
-      // console.log(allUsers);
       const result = replaceUnderscoreId(allUsers);
       res.status(200).json(result);
    } catch (err) {
@@ -38,20 +37,17 @@ router.post('/', async function (req, res) {
    const newUser = req.body;
    try {
       await indicative.validator.validate(newUser, {
-         // id: 'required|string',
          fname: 'required|string|min:2',
          lname: 'required|string|min:2',
-         username: 'required|string|min:2',
-         password: 'required|string|min:2',
-         // phone: 'string|min:10|max:10',
-         // mail: 'required|email',
-         // userPic: 'url',
+         username: 'required|string|min:5|max:15',
+         password: 'required|string|min:5',
+         phone: 'string|min:10|max:10',
+         mail: 'required|email',
          description: 'string',
-         role: 'required|number',
-         status: 'required|number',
+         role: 'required',
+         status: 'required',
          timeOfCreation: 'required|string',
          timeOfModification: 'string'
-
       });
       try {
          const usernameCheck = await req.app.locals.db.collection("users").findOne({ username: newUser.username });
@@ -87,8 +83,6 @@ router.post('/', async function (req, res) {
 
 
 router.put("/Edit-form:id", async (req, res) => {
-   // router.put("/Edit-form/:id", async (req, res) => {
-   // router.put("/:id", async (req, res) => {
    const params = req.params;
    URLIdValidation(req, res, params.id);
    const oldUser = await req.app.locals.db.collection('users').findOne({ _id: new ObjectId(params.id) });
@@ -103,17 +97,16 @@ router.put("/Edit-form:id", async (req, res) => {
    }
    try {
       await indicative.validator.validate(updatedUser, {
-         // id:'required|regex:^[0-9a-f]{24}$',
+         id:'required|regex:^[0-9a-f]{24}$',
          fname: 'required|string|min:2',
          lname: 'required|string|min:2',
-         username: 'required|string|min:2',
-         password: 'required|string|min:2',
-         // phone: 'string|min:10|max:10',
-         // mail: 'required|email',
-         // userPic: 'url',
+         username: 'required|string|min:5|max:15',
+         password: 'required|string|min:5',
+         phone: 'string|min:10|max:10',
+         mail: 'required|email',
          description: 'string',
-         role: 'required|number',
-         status: 'required|number',
+         role: 'required',
+         status: 'required',
          timeOfCreation: 'required|string',
          timeOfModification: 'string'
       });
