@@ -11,8 +11,7 @@ const usersDB = 'usersDB.json';
 //************************************** */
 router.post('/', async function (req, res) {
    const currInput = new LoginInput(req.body.username, req.body.password);
-   console.log(currInput);
-   
+  
    try {
       await indicative.validator.validate(currInput, {
          username: 'required|string|min:2',
@@ -34,7 +33,6 @@ router.post('/', async function (req, res) {
          return;
       }
    } catch (errors) {
-      console.log(errors)
       sendErrorResponse(req, res, 400, `Invalid User data: ${errors.map(e => e.message).join(', ')}`, errors);
    }
 });

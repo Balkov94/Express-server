@@ -9,7 +9,6 @@ const router = express.Router();
 router.get('/', async (req, res) => {
    try {
       const allQuestions = await req.app.locals.db.collection("questions").find().toArray();
-      console.log(allQuestions);
       const result = replaceUnderscoreId(allQuestions);
       res.status(200).json(result);
    } catch (err) {
@@ -22,7 +21,7 @@ router.get('/:id', async (req, res) => {
    URLIdValidation(req, res, params.id);
    try {
       const currQuestion = await req.app.locals.db.collection("questions").findOne({ _id: new ObjectId(params.id) });
-      console.log(currQuestion);
+     
       if (!currQuestion) {
          sendErrorResponse(req, res, 404, `Question with ID=${req.params.id} does not exist`);
          return;
@@ -40,7 +39,7 @@ router.post('/', async function (req, res) {
    try {
       await indicative.validator.validate(newQuestion, {
          creatorId: 'required',
-         title: 'required|string|min:2|max:30',
+         title: 'required|string|min:2|max:100',
          content: 'required|string|min:2',
          timeOfCreation: 'string|required',
          timeOfModification: 'string',
@@ -49,7 +48,7 @@ router.post('/', async function (req, res) {
          delete newQuestion.id;
          const { acknowledged, insertedId } = await req.app.locals.db.collection('questions').insertOne(newQuestion);
          if (acknowledged) {
-            console.log(`Successfully inserted 1 document with ID ${insertedId}`);
+            
 
             const result=replaceUnderscoreId(newQuestion);
             res.status(201)
@@ -62,14 +61,12 @@ router.post('/', async function (req, res) {
          sendErrorResponse(req, res, 500, `Server error: ${err.message}`, err);
       }
    } catch (errors) {
-      console.log(errors)
+      
       sendErrorResponse(req, res, 400, `Invalid Question data: ${errors.map(e => e.message).join(', ')}`, errors);
    }
 });
 
 
-
-// router.put('/question:id/edit', async (req, res) => {
 router.put('/question:id', async (req, res) => {
    const params = req.params;
    URLIdValidation(req, res, params.id);
@@ -87,7 +84,7 @@ router.put('/question:id', async (req, res) => {
       await indicative.validator.validate(updatedQuestion, {
          id:'required|regex:^[0-9a-f]{24}$',
          creatorId: 'required',
-         title: 'required|string|min:2|max:30',
+         title: 'required|string|min:2|max:100',
          content: 'required|string|min:2|max:512',
          timeOfCreation: 'string|required',
          timeOfModification: 'string',
@@ -102,7 +99,7 @@ router.put('/question:id', async (req, res) => {
             return;
          }
       } catch (err) {
-         console.log(`Unable to update Question: ${updatedQuestion.id}: ${updatedQuestion.title}`);
+         
          console.error(err);
          sendErrorResponse(req, res, 500, `Server error: ${err.message}`, err);
       }

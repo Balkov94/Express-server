@@ -9,7 +9,7 @@ const router = express.Router();
 router.get('/', async (req, res) => {
    try {
       const allClubs = await req.app.locals.db.collection("clubs").find().toArray();
-      console.log(allClubs);
+     
       const result = replaceUnderscoreId(allClubs);
       res.status(200).json(result);
    } catch (err) {
@@ -22,7 +22,7 @@ router.get('/club:id', async (req, res) => {
    URLIdValidation(req, res, params.id);
    try {
       const currClub = await req.app.locals.db.collection("clubs").findOne({ _id: new ObjectId(params.id) });
-      console.log(currClub);
+     
       if (!currClub) {
          sendErrorResponse(req, res, 404, `Club with ID=${req.params.id} does not exist`);
          return;
@@ -50,7 +50,7 @@ router.post('/', async function (req, res) {
          delete newClub.id;
          const { acknowledged, insertedId } = await req.app.locals.db.collection('clubs').insertOne(newClub);
          if (acknowledged) {
-            console.log(`Successfully inserted 1 document with ID ${insertedId}`);
+            
             res.status(201)
                .location(`http://${HOSTNAME}:${PORT}/api/ReadingClubs/club${insertedId}`)
                .json(newClub);
@@ -61,7 +61,7 @@ router.post('/', async function (req, res) {
          sendErrorResponse(req, res, 500, `Server error: ${err.message}`, err);
       }
    } catch (errors) {
-      console.log(errors)
+      
       sendErrorResponse(req, res, 400, `Invalid Club data: ${errors.map(e => e.message).join(', ')}`, errors);
    }
 });
@@ -94,14 +94,14 @@ router.put('/:id', async (req, res) => {
          delete updatedClubData.id
          const { acknowledged, modifiedCount } = await req.app.locals.db.collection('clubs').replaceOne({ _id: new ObjectId(params.id) }, updatedClubData)
          if (acknowledged && modifiedCount === 1) {
-            console.log(`Updated Club: ${JSON.stringify(updatedClubData)}`);
+            
             res.json(updatedClubData);
          } else {
             sendErrorResponse(req, res, 500, `Unable to update Club: ${updatedClubData.id}: ${updatedClubData.title}`);
             return;
          }
       } catch (err) {
-         console.log(`Unable to update Club: ${updatedClubData.id}: ${updatedClubData.title}`);
+         
          console.error(err);
          sendErrorResponse(req, res, 500, `Server error: ${err.message}`, err);
       }

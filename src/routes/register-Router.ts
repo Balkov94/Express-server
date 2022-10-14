@@ -36,7 +36,7 @@ router.post('/', async function (req, res) {
          delete newUser.id;
          const { acknowledged, insertedId } = await req.app.locals.db.collection('users').insertOne(newUser);
          if (acknowledged) {
-            console.log(`Successfully inserted 1 document with ID ${insertedId}`);
+            
             res.status(201)
                .location(`http://${HOSTNAME}:${PORT}/api/AllUsers/${insertedId}`)
                .json(newUser);
@@ -47,7 +47,7 @@ router.post('/', async function (req, res) {
          sendErrorResponse(req, res, 500, `Server error: ${err.message}`, err);
       }
    } catch (errors) {
-      console.log(errors)
+     
       sendErrorResponse(req, res, 400, `Invalid User data: ${errors?.map(e => e.message).join(', ')}`, errors);
    }
 });

@@ -8,7 +8,7 @@ const router = express.Router();
 router.get('/', async (req, res) => {
    try {
       const allBooks = await req.app.locals.db.collection("books").find().toArray();
-      console.log(allBooks);
+      
       const result = replaceUnderscoreId(allBooks);
       res.status(200).json(result);
    } catch (err) {
@@ -21,7 +21,7 @@ router.get('/:id', async (req, res) => {
    URLIdValidation(req, res, params.id);
    try {
       const currBook = await req.app.locals.db.collection("books").findOne({ _id: new ObjectId(params.id) });
-      console.log(currBook);
+      
       if (!currBook) {
          sendErrorResponse(req, res, 404, `Book with ID=${req.params.id} does not exist`);
          return;
@@ -46,7 +46,7 @@ router.post('/', async function (req, res) {
          delete newBook.id; //udefined by default from GB BookClass
          const { acknowledged, insertedId } = await req.app.locals.db.collection('books').insertOne(newBook);
          if (acknowledged) {
-            console.log(`Successfully inserted 1 document with ID ${insertedId}`);
+            
             res.status(201)
                .location(`http://${HOSTNAME}:${PORT}/api/ExchangePage/${insertedId}`)
                .json(newBook);
@@ -57,7 +57,7 @@ router.post('/', async function (req, res) {
          sendErrorResponse(req, res, 500, `Server error: ${err.message}`, err);
       }
    } catch (errors) {
-      console.log(errors)
+      
       sendErrorResponse(req, res, 400, `Invalid Book data: ${errors.map(e => e.message).join(', ')}`, errors);
    }
 });
@@ -87,14 +87,14 @@ router.put('/:id', async (req, res) => {
          delete updatedBookData.id
          const { acknowledged, modifiedCount } = await req.app.locals.db.collection('books').replaceOne({ _id: new ObjectId(params.id) }, updatedBookData)
          if (acknowledged && modifiedCount === 1) {
-            console.log(`Updated Book: ${JSON.stringify(updatedBookData)}`);
+           
             res.json(updatedBookData);
          } else {
             sendErrorResponse(req, res, 500, `Unable to update Book: ${updatedBookData.id}: ${updatedBookData.title}`);
             return;
          }
       } catch (err) {
-         console.log(`Unable to update Book: ${updatedBookData.id}: ${updatedBookData.title}`);
+         
          console.error(err);
          sendErrorResponse(req, res, 500, `Server error: ${err.message}`, err);
       }

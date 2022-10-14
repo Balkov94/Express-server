@@ -8,7 +8,7 @@ const router = express.Router();
 router.get('/', async (req, res) => {
    try {
       const allComments = await req.app.locals.db.collection("comments").find().toArray();
-      console.log(allComments);
+     
       const result = replaceUnderscoreId(allComments);
       res.status(200).json(result);
    } catch (err) {
@@ -21,7 +21,7 @@ router.get('/:id', async (req, res) => {
    URLIdValidation(req, res, params.id);
    try {
       const currComment = await req.app.locals.db.collection("comments").findOne({ _id: new ObjectId(params.id) });
-      console.log(currComment);
+      
       if (!currComment) {
          sendErrorResponse(req, res, 404, `Comment with ID=${req.params.id} does not exist`);
          return;
@@ -49,7 +49,7 @@ router.post('/', async function (req, res) {
          delete newComment.id;
          const { acknowledged, insertedId } = await req.app.locals.db.collection('comments').insertOne(newComment);
          if (acknowledged) {
-            console.log(`Successfully inserted 1 document with ID ${insertedId}`);
+           
             const result=replaceUnderscoreId(newComment);
             res.status(201)
                .location(`http://${HOSTNAME}:${PORT}/api/${insertedId}`)
@@ -61,7 +61,7 @@ router.post('/', async function (req, res) {
          sendErrorResponse(req, res, 500, `Server error: ${err.message}`, err);
       }
    } catch (errors) {
-      console.log(errors)
+     
       sendErrorResponse(req, res, 400, `Invalid Comment data: ${errors.map(e => e.message).join(', ')}`, errors);
    }
 });
@@ -94,14 +94,14 @@ router.put('/:id', async (req, res) => {
          delete updatedComment.id
          const { acknowledged, modifiedCount } = await req.app.locals.db.collection('comments').replaceOne({ _id: new ObjectId(params.id) }, updatedComment)
          if (acknowledged && modifiedCount === 1) {
-            console.log(`Updated Comment: ${JSON.stringify(updatedComment)}`);
+            
             res.json({...updatedComment,id:params.id});
          } else {
             sendErrorResponse(req, res, 500, `Unable to update Comment: ${updatedComment.id}: ${updatedComment.title}`);
             return;
          }
       } catch (err) {
-         console.log(`Unable to update Comment: ${updatedComment.id}: ${updatedComment.title}`);
+         
          console.error(err);
          sendErrorResponse(req, res, 500, `Server error: ${err.message}`, err);
       }
