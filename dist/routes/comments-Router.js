@@ -15,6 +15,19 @@ const indicative = require("indicative");
 const server_1 = require("../server");
 const mongodb_1 = require("mongodb");
 const router = express.Router();
+router.use('/', (req, res, next) => {
+    if (req.method !== 'POST') {
+        next();
+    }
+    else if (req.headers && req.headers["authorization"]) {
+        const value = req.headers["authorization"];
+        console.log(value);
+        next();
+    }
+    else {
+        (0, utils_1.sendErrorResponse)(req, res, 401, `Server error: ${'Not Autorized'}`);
+    }
+});
 router.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const allComments = yield req.app.locals.db.collection("comments").find().toArray();

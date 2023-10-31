@@ -28,6 +28,24 @@ app.use(cors({
 }))
 app.use(logger('dev'))
 app.use(express.json({ limit: '10mb' }))
+
+//add authentication only for create/edit/delete operations
+app.use((req, res, next) => {
+   if (req.method === 'GET') {
+      next();
+   }
+   else if (req.headers && req.headers["authorization"]) {
+      const accessToken = req.headers["authorization"];
+      console.log(accessToken);
+      //check if accessToken valid
+
+      next();
+   }
+   else {
+      sendErrorResponse(req, res, 401, `Server error: ${'Not Autorized'}`);
+   }
+})
+
 app
    .use('/api/ReadingClubs', clubsRouter)
    .use('/api/AllUsers', usersRouter)
@@ -35,11 +53,11 @@ app
    .use('/api/ExchangePage', booksRouter)
    .use('/api/Login', loginRouter)
    .use('/api/Register', registerRouter)
-   .use('/api/', commentsRouter) 
+   .use('/api/', commentsRouter)
    .use((req, res) => {
       sendErrorResponse(req, res, 404, `This is not the page you are looking for...`);
-  });
-  
+   });
+
 app.use(function (err, req, res, next) {
    console.error(err.stack)
    sendErrorResponse(req, res, err.status || 500, `Server error: ${err.message}`, err);
