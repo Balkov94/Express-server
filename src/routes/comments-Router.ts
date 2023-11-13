@@ -131,17 +131,18 @@ router.delete('/:id', async (req, res) => {
    URLIdValidation(req, res, params.id);
    try {
       const deletedComment = await req.app.locals.db.collection('comments').findOneAndDelete({ _id: new ObjectId(params.id) });
-      if (!deletedComment.ok) {
-         sendErrorResponse(req, res, 500, `Error deleting the document in Mongodb`);
+      if (deletedComment) {
+         res.status(204).json(deletedComment);
          return;
       }
       if (deletedComment.lastErrorObject.n === 0) {
          sendErrorResponse(req, res, 404, `Comment with ID=${req.params.id} does not exist`);
          return;
       }
-      res.status(200).json(deletedComment.value);
+      
    } catch (errors) {
-      sendErrorResponse(req, res, 400, `Invalid Comment data: ${errors.map(e => e.message).join(', ')}`, errors);
+      //sendErrorResponse(req, res, 400, `Invalid Comment data: ${errors.map(e => e.message).join(', ')}`, errors);
+      sendErrorResponse(req, res, 400, `Invalid Comment data: ${errors.message}`, errors);
    }
 });
 

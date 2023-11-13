@@ -67,7 +67,8 @@ router.post('/', async function (req, res) {
 });
 
 
-router.put('/question:id', async (req, res) => {
+//router.put('/question:id', async (req, res) => {
+router.put('/:id', async (req, res) => {
    const params = req.params;
    URLIdValidation(req, res, params.id);
    const oldQuestion = await req.app.locals.db.collection('questions').findOne({ _id: new ObjectId(params.id) });
@@ -114,17 +115,17 @@ router.delete('/:id', async (req, res) => {
    URLIdValidation(req, res, params.id);
    try {
       const deletedQuestion = await req.app.locals.db.collection('questions').findOneAndDelete({ _id: new ObjectId(params.id) });
-      if (!deletedQuestion.ok) {
-         sendErrorResponse(req, res, 500, `Error deleting the document in Mongodb`);
+      const copy = {...deletedQuestion};
+      if (deletedQuestion) {
+         res.json(deletedQuestion);
          return;
       }
-      if (deletedQuestion.lastErrorObject.n === 0) {
+      if (!deletedQuestion) {
          sendErrorResponse(req, res, 404, `Question with ID=${req.params.id} does not exist`);
          return;
       }
-      res.status(200).json(deletedQuestion.value);
    } catch (errors) {
-      sendErrorResponse(req, res, 400, `Invalid Question data: ${errors.map(e => e.message).join(', ')}`, errors);
+      sendErrorResponse(req, res, 400, `Invalid Question data: ${errors.message}`, errors);
    }
 });
 

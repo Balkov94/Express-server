@@ -1,6 +1,9 @@
 import * as express from 'express';
 import { replaceUnderscoreId, sendErrorResponse } from '../utils';
 import * as indicative from 'indicative';
+import * as  jwt from 'jsonwebtoken';
+import 'dotenv/config'
+//console.log(process.env.SECRET)
 
 const router = express.Router();
 const usersDB = 'usersDB.json';
@@ -21,7 +24,10 @@ router.post('/', async function (req, res) {
          const user = await req.app.locals.db.collection('users').findOne({ username: currInput.username });
          if (user && user.password === currInput.password) {
             const result = replaceUnderscoreId(user);
-            res.status(200).json(result);
+            //add JSON web token to response
+            const accessToken = jwt.sign(user.username, process.env.ACCESS_TOKEN_SECRET);
+            // result.token=accessToken;
+            res.status(200).json({data:result, token:accessToken});
          }
          else {
             sendErrorResponse(req, res, 400, `Wrong username or password.`);

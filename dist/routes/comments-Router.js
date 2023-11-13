@@ -15,19 +15,21 @@ const indicative = require("indicative");
 const server_1 = require("../server");
 const mongodb_1 = require("mongodb");
 const router = express.Router();
-router.use('/', (req, res, next) => {
-    if (req.method !== 'POST') {
-        next();
-    }
-    else if (req.headers && req.headers["authorization"]) {
-        const value = req.headers["authorization"];
-        console.log(value);
-        next();
-    }
-    else {
-        (0, utils_1.sendErrorResponse)(req, res, 401, `Server error: ${'Not Autorized'}`);
-    }
-});
+//example of router middleware
+// router.use('/', (req, res, next) => {
+//    // only need auth for add comment and edit them / for now 
+//    if (req.method !== 'POST' && req.method !== 'PUT') {
+//       next();
+//    }
+//    else if (req.headers && req.headers["authorization"]) {
+//       const value = req.headers["authorization"];
+//       console.log(value)
+//       next();
+//    }
+//    else {
+//       sendErrorResponse(req, res, 401, `Server error: ${'Not Autorized'}`);
+//    }
+// })
 router.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const allComments = yield req.app.locals.db.collection("comments").find().toArray();
@@ -135,18 +137,18 @@ router.delete('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* 
     (0, utils_1.URLIdValidation)(req, res, params.id);
     try {
         const deletedComment = yield req.app.locals.db.collection('comments').findOneAndDelete({ _id: new mongodb_1.ObjectId(params.id) });
-        if (!deletedComment.ok) {
-            (0, utils_1.sendErrorResponse)(req, res, 500, `Error deleting the document in Mongodb`);
+        if (deletedComment) {
+            res.status(204).json(deletedComment);
             return;
         }
         if (deletedComment.lastErrorObject.n === 0) {
             (0, utils_1.sendErrorResponse)(req, res, 404, `Comment with ID=${req.params.id} does not exist`);
             return;
         }
-        res.status(200).json(deletedComment.value);
     }
     catch (errors) {
-        (0, utils_1.sendErrorResponse)(req, res, 400, `Invalid Comment data: ${errors.map(e => e.message).join(', ')}`, errors);
+        //sendErrorResponse(req, res, 400, `Invalid Comment data: ${errors.map(e => e.message).join(', ')}`, errors);
+        (0, utils_1.sendErrorResponse)(req, res, 400, `Invalid Comment data: ${errors.message}`, errors);
     }
 }));
 exports.default = router;

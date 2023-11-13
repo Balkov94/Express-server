@@ -31,19 +31,23 @@ app.use(express.json({ limit: '10mb' }))
 
 //add authentication only for create/edit/delete operations
 app.use((req, res, next) => {
-   if (req.method === 'GET') {
-      next();
-   }
-   else if (req.headers && req.headers["authorization"]) {
-      const accessToken = req.headers["authorization"];
-      console.log(accessToken);
-      //check if accessToken valid
+   next();
+   // if (req.method === 'GET') {
+   //    next();
+   // }
+   // else if (req.path.includes('Login')) {
+   //    next();
+   // }
+   // else if (req.headers && req.headers["authorization"]) {
+   //    const accessToken = req.headers["authorization"];
+   //    console.log(accessToken);
+   //    //check if accessToken valid
 
-      next();
-   }
-   else {
-      sendErrorResponse(req, res, 401, `Server error: ${'Not Autorized'}`);
-   }
+   //    next();
+   // }
+   // else {
+   //    sendErrorResponse(req, res, 401, `Server error: ${'Not Autorized'}`);
+   // }
 })
 
 app

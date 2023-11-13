@@ -12,6 +12,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express = require("express");
 const utils_1 = require("../utils");
 const indicative = require("indicative");
+const jwt = require("jsonwebtoken");
+require("dotenv/config");
+//console.log(process.env.SECRET)
 const router = express.Router();
 const usersDB = 'usersDB.json';
 // Login (authentication)
@@ -30,7 +33,10 @@ router.post('/', function (req, res) {
                 const user = yield req.app.locals.db.collection('users').findOne({ username: currInput.username });
                 if (user && user.password === currInput.password) {
                     const result = (0, utils_1.replaceUnderscoreId)(user);
-                    res.status(200).json(result);
+                    //add JSON web token to response
+                    const accessToken = jwt.sign(user.username, process.env.ACCESS_TOKEN_SECRET);
+                    // result.token=accessToken;
+                    res.status(200).json({ data: result, token: accessToken });
                 }
                 else {
                     (0, utils_1.sendErrorResponse)(req, res, 400, `Wrong username or password.`);

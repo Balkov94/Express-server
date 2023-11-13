@@ -73,7 +73,8 @@ router.post('/', function (req, res) {
         }
     });
 });
-router.put('/question:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+//router.put('/question:id', async (req, res) => {
+router.put('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const params = req.params;
     (0, utils_1.URLIdValidation)(req, res, params.id);
     const oldQuestion = yield req.app.locals.db.collection('questions').findOne({ _id: new mongodb_1.ObjectId(params.id) });
@@ -120,18 +121,19 @@ router.delete('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* 
     (0, utils_1.URLIdValidation)(req, res, params.id);
     try {
         const deletedQuestion = yield req.app.locals.db.collection('questions').findOneAndDelete({ _id: new mongodb_1.ObjectId(params.id) });
-        if (!deletedQuestion.ok) {
-            (0, utils_1.sendErrorResponse)(req, res, 500, `Error deleting the document in Mongodb`);
+        if (deletedQuestion) {
+            //res.status(204).json({deletedQuestion});
+            // res.status(204).json({message:'Successfully deleted question'});
+            res.json(deletedQuestion);
             return;
         }
-        if (deletedQuestion.lastErrorObject.n === 0) {
+        if (!deletedQuestion) {
             (0, utils_1.sendErrorResponse)(req, res, 404, `Question with ID=${req.params.id} does not exist`);
             return;
         }
-        res.status(200).json(deletedQuestion.value);
     }
     catch (errors) {
-        (0, utils_1.sendErrorResponse)(req, res, 400, `Invalid Question data: ${errors.map(e => e.message).join(', ')}`, errors);
+        (0, utils_1.sendErrorResponse)(req, res, 400, `Invalid Question data: ${errors.message}`, errors);
     }
 }));
 exports.default = router;
