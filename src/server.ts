@@ -13,7 +13,9 @@ import registerRouter from './routes/register-Router';
 import { MongoClient } from 'mongodb';
 export const HOSTNAME = 'localhost';
 export const PORT = 8000;
-const dbUrl = `mongodb://localhost:27017`;
+// const dbUrl = `mongodb://localhost:27017`;
+//const dbUrl = `mongodb://localhost:27017`; NOT working need IP v6 / localhost!==IP v6
+const dbUrl = `mongodb://127.0.0.1:27017`;
 const database = 'GoodBook';
 
 const app = express();
