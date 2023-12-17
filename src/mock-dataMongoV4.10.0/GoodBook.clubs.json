@@ -1,0 +1,59 @@
+[{
+  "_id": {
+    "$oid": "657ecfa4b30da8363d17c615"
+  },
+  "creatorId": "657ece2db30da8363d17c613",
+  "name": "Horror FANS",
+  "interests": [
+    "horror",
+    "fear",
+    "fantasy",
+    "dark",
+    "spooky"
+  ],
+  "participants": [
+    "657ece2db30da8363d17c613",
+    "657ed101b30da8363d17c61b",
+    "657ed37ab30da8363d17c623",
+    "657ed5bdb30da8363d17c629",
+    "657ed91fb30da8363d17c631",
+    "657edfe5b30da8363d17c636"
+  ],
+  "banned": []
+},
+{
+  "_id": {
+    "$oid": "657ed237b30da8363d17c61e"
+  },
+  "creatorId": "657ed101b30da8363d17c61b",
+  "name": "Mandanga style",
+  "interests": [
+    "IT",
+    "javascript",
+    "OOP",
+    "HTML"
+  ],
+  "participants": [
+    "657ed101b30da8363d17c61b",
+    "657ed37ab30da8363d17c623",
+    "657ed91fb30da8363d17c631"
+  ],
+  "banned": []
+},
+{
+  "_id": {
+    "$oid": "657ed449b30da8363d17c625"
+  },
+  "creatorId": "657ed37ab30da8363d17c623",
+  "name": "Marketing",
+  "interests": [
+    "fish",
+    "money",
+    "imigrants",
+    "house manager"
+  ],
+  "participants": [
+    "657ed37ab30da8363d17c623"
+  ],
+  "banned": []
+}]

@@ -1,0 +1,121 @@
+[{
+  "_id": {
+    "$oid": "657ecfd0b30da8363d17c616"
+  },
+  "creatorId": "657ece2db30da8363d17c613",
+  "discussionId": "657ecfa4b30da8363d17c615",
+  "isClub": true,
+  "content": "Hi, here we can discus some new readings.",
+  "timeOfCreation": "Sun Dec 17 2023 12:39:12 PM ",
+  "timeOfModification": null
+},
+{
+  "_id": {
+    "$oid": "657ed0a9b30da8363d17c61a"
+  },
+  "creatorId": "657ece2db30da8363d17c613",
+  "discussionId": "657ecee6b30da8363d17c614",
+  "isClub": false,
+  "content": "If s1 want , we can enchange ",
+  "timeOfCreation": "Sun Dec 17 2023 12:42:49 PM ",
+  "timeOfModification": null
+},
+{
+  "_id": {
+    "$oid": "657ed124b30da8363d17c61c"
+  },
+  "creatorId": "657ed101b30da8363d17c61b",
+  "discussionId": "657ecee6b30da8363d17c614",
+  "isClub": false,
+  "content": "Olleee...",
+  "timeOfCreation": "Sun Dec 17 2023 12:44:52 PM ",
+  "timeOfModification": null
+},
+{
+  "_id": {
+    "$oid": "657ed2edb30da8363d17c622"
+  },
+  "creatorId": "657ed101b30da8363d17c61b",
+  "discussionId": "657ed237b30da8363d17c61e",
+  "isClub": true,
+  "content": "Ollle....",
+  "timeOfCreation": "Sun Dec 17 2023 12:52:29 PM ",
+  "timeOfModification": null
+},
+{
+  "_id": {
+    "$oid": "657ed4a8b30da8363d17c626"
+  },
+  "discussionId": "657ed449b30da8363d17c625",
+  "isClub": true,
+  "creatorId": "657ed37ab30da8363d17c623",
+  "content": "yo no limpio pescado ",
+  "timeOfCreation": "Sun Dec 17 2023 12:59:52 PM ",
+  "timeOfModification": "Sun Dec 17 2023 1:00:11 PM "
+},
+{
+  "_id": {
+    "$oid": "657ed5f2b30da8363d17c62a"
+  },
+  "creatorId": "657ed5bdb30da8363d17c629",
+  "discussionId": "657ecee6b30da8363d17c614",
+  "isClub": false,
+  "content": "still searching?",
+  "timeOfCreation": "Sun Dec 17 2023 1:05:22 PM ",
+  "timeOfModification": null
+},
+{
+  "_id": {
+    "$oid": "657ed6eeb30da8363d17c62c"
+  },
+  "discussionId": "657ecfa4b30da8363d17c615",
+  "isClub": true,
+  "creatorId": "657ed5bdb30da8363d17c629",
+  "content": "Good idеа",
+  "timeOfCreation": "Sun Dec 17 2023 1:09:34 PM ",
+  "timeOfModification": "Sun Dec 17 2023 1:10:14 PM "
+},
+{
+  "_id": {
+    "$oid": "657ed9c1b30da8363d17c633"
+  },
+  "creatorId": "657ed91fb30da8363d17c631",
+  "discussionId": "657ecfa4b30da8363d17c615",
+  "isClub": true,
+  "content": "Nice!",
+  "timeOfCreation": "Sun Dec 17 2023 1:21:37 PM ",
+  "timeOfModification": null
+},
+{
+  "_id": {
+    "$oid": "657ee053b30da8363d17c637"
+  },
+  "creatorId": "657edfe5b30da8363d17c636",
+  "discussionId": "657ecee6b30da8363d17c614",
+  "isClub": false,
+  "content": "Better read 'Winnetou' its my favourite <3",
+  "timeOfCreation": "Sun Dec 17 2023 1:49:39 PM ",
+  "timeOfModification": null
+},
+{
+  "_id": {
+    "$oid": "657ee12ab30da8363d17c639"
+  },
+  "creatorId": "657edfe5b30da8363d17c636",
+  "discussionId": "657ecfa4b30da8363d17c615",
+  "isClub": true,
+  "content": "Хубаво е",
+  "timeOfCreation": "Sun Dec 17 2023 1:53:14 PM ",
+  "timeOfModification": null
+},
+{
+  "_id": {
+    "$oid": "657ef70e436ecb3cd49e0438"
+  },
+  "creatorId": "657ece2db30da8363d17c613",
+  "discussionId": "657ecfa4b30da8363d17c615",
+  "isClub": true,
+  "content": ":)",
+  "timeOfCreation": "Sun Dec 17 2023 3:26:38 PM ",
+  "timeOfModification": null
+}]
